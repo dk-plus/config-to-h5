@@ -1,0 +1,23 @@
+{
+  "entry": "./src/index.js",
+  "outputPath": "../app/public",
+  "env": {
+    "production": {
+      "publicPath": "/public/"
+    },
+    "development": {
+      "publicPath": "/"
+    }
+  },
+  "extraBabelPlugins": [
+    ["import", {
+      "libraryName": "antd",
+      "libraryDirectory": "es",
+      "style": true
+    }]
+  ],
+  "theme": {
+    "primary-color": "#ff3399"
+  },
+  "es5ImcompatibleVersions": true
+}
