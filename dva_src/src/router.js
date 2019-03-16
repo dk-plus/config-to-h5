@@ -3,7 +3,6 @@ import { Router, Route, Switch, routerRedux } from 'dva/router';
 import dynamic from 'dva/dynamic';
 import { Card, Spin, LocaleProvider } from 'antd';
 import MyLayout from './components/MyLayout';
-import Resume from './routes/Resume';
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
@@ -37,11 +36,6 @@ function RouterConfig({ history, app }) {
       component: () => import('./routes/IndexPage'),
     },
     {
-      path: '/products',
-      models: () => [import('./models/products')],
-      component: () => import('./routes/Products'),
-    },
-    {
       path: '/template',
       models: () => [import('./models/template')],
       component: () => import('./routes/activity/Template'),
@@ -61,7 +55,7 @@ function RouterConfig({ history, app }) {
       <LocaleProvider locale={zh_CN}>
         <Router history={history}>
         <Switch>
-          {/* <Route path="/login" component={Login} />
+          <Route path="/login" component={Login} />
           <MyLayout history={history}>
             {
               routes.map(({ path, ...dynamics }, key) => (
@@ -71,8 +65,7 @@ function RouterConfig({ history, app }) {
                 })} />
               ))
             }
-          </MyLayout> */}
-          <Route path="/" component={Resume} />
+          </MyLayout>
         </Switch>
         </Router>
       </LocaleProvider>

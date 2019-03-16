@@ -29,11 +29,11 @@ module.exports = app => {
     tags: STRING(50),
     type: INTEGER,
     url: STRING(50),
-    createAt: {
+    createdAt: {
       type: BIGINT,
       field: 'created_at'
     },
-    updateAt: {
+    updatedAt: {
       type: BIGINT,
       field: 'updated_at'
     },

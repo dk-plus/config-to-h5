@@ -94,6 +94,24 @@ class ActivityEdit extends React.Component {
     });
   }
 
+  renderModule() {
+    const rowGutter = { xs: 8, sm: 16, md: 16, lg: 24 };
+    const colSpan = { xs: 24, sm: 12, md: 8, lg: 8 };
+    return <Card title="模块信息">
+      <Row gutter={rowGutter}>
+        <Col {...colSpan}>
+          <Form.Item label="标题"></Form.Item>
+        </Col>
+        <Col {...colSpan}>
+          <Form.Item label="类型"></Form.Item>
+        </Col>
+        <Col {...colSpan}>
+          <Form.Item label="排序"></Form.Item>
+        </Col>
+      </Row>
+    </Card>
+  }
+
   renderForm() {
     const { template: { detail }, location: { pathname }, form, editLoading } = this.props;
     const { getFieldDecorator } = form;
@@ -207,6 +225,9 @@ class ActivityEdit extends React.Component {
             </Col>
           </Row>
         </Card>
+        {
+          this.renderModule()
+        }
         <Row type="flex" justify="end" style={{marginTop: '20px'}}>
           <Col>
             <Button type="primary" htmlType="submit" loading={editLoading}>提交</Button>

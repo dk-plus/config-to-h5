@@ -15,21 +15,21 @@ const menu = [{
   url: '/home',
   icon: 'home',
 }, {
-//   key: 'activity',
-//   title: '活动管理',
-//   url: '/activity',
-//   icon: 'file',
-//   children: [{
-//     key: 'template',
-//     title: 'h5模板',
-//     url: '/template',
-//     icon: 'file',
-//   }],
-// }, {
-  key: 'template',
-  title: 'h5模板',
-  url: '/template',
+  key: 'activity',
+  title: '活动管理',
+  url: '/activity',
   icon: 'file',
+  children: [{
+    key: 'template',
+    title: 'h5模板',
+    url: '/template',
+    icon: 'file',
+  }],
+// }, {
+//   key: 'template',
+//   title: 'h5模板',
+//   url: '/template',
+//   icon: 'file',
 }];
 
 const breadcrumbMap = {
@@ -52,13 +52,10 @@ class MyLayout extends React.Component {
   render() {
     const { children, history: { location } } = this.props;
     const { pathname } = location;
-    // console.log(location)
-    // console.log(siderMap)
-    // console.log(pathname.split('/'))
 
     return (
       <Layout
-        style={{ height: '100%' }}>
+        style={{ minHeight: '100%' }}>
         <Header style={{display: 'flex', justifyContent: 'space-between'}}>
           <div style={{ color: '#fff' }}>dva-demo</div>
           <Menu

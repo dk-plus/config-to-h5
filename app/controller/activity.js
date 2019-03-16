@@ -19,8 +19,8 @@ class ActivityController extends Controller {
     const dynamicQuery = {
       ...ctx.parseLikeQuery(`name`, name),
       ...ctx.parseLikeQuery(`title`, title),
-      ...ctx.parseBetweenQuery(`createAt`, createTimeBegin, createTimeEnd),
-      ...ctx.parseBetweenQuery(`updateAt`, updateTimeBegin, updateTimeEnd),
+      ...ctx.parseBetweenQuery(`createdAt`, createTimeBegin, createTimeEnd),
+      ...ctx.parseBetweenQuery(`updatedAt`, updateTimeBegin, updateTimeEnd),
     };
     
     // 查询参数
@@ -49,9 +49,9 @@ class ActivityController extends Controller {
   async create() {
     const ctx = this.ctx;
     const { ...rest } = ctx.request.body;
-    const createAt = new Date().valueOf();
-    const updateAt = new Date().valueOf();
-    const activity = await ctx.model.Activity.create({ createAt, updateAt, ...rest });
+    const createdAt = new Date().valueOf();
+    const updatedAt = new Date().valueOf();
+    const activity = await ctx.model.Activity.create({ createdAt, updatedAt, ...rest });
     ctx.status = 201;
     ctx.body = ctx.outputSuccess(activity);
   }
@@ -66,8 +66,8 @@ class ActivityController extends Controller {
     }
 
     const { ...rest } = ctx.request.body;
-    const updateAt = new Date().valueOf();
-    await activity.update({ updateAt, ...rest });
+    const updatedAt = new Date().valueOf();
+    await activity.update({ updatedAt, ...rest });
     ctx.body = ctx.outputSuccess(activity);
   }
 
