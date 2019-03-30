@@ -21,8 +21,8 @@ class DataDictionaryController extends Controller {
   async create() {
     const ctx = this.ctx;
     const { ...rest } = ctx.request.body;
-    const createdAt = new Date().valueOf();
-    const updatedAt = new Date().valueOf();
+    const createdAt = Date.now();
+    const updatedAt = Date.now();
     const dictionary = await ctx.DataDictionary.User.create({ createdAt, updatedAt, ...rest });
     ctx.status = 201;
     ctx.body = dictionary;
@@ -38,7 +38,7 @@ class DataDictionaryController extends Controller {
     }
 
     const { ...rest } = ctx.request.body;
-    const updatedAt = new Date().valueOf();
+    const updatedAt = Date.now();
     await dictionary.update({ updatedAt, ...rest });
     ctx.body = dictionary;
   }

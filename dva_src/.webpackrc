@@ -16,5 +16,32 @@
       "style": true
     }]
   ],
-  "es5ImcompatibleVersions": true
+  "es5ImcompatibleVersions": true,
+  "proxy": {
+    "/logout": {
+      "target": "http://127.0.0.1:7991/",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    },
+    "/user": {
+      "target": "http://127.0.0.1:7991/",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    },
+    "/activity": {
+      "target": "http://127.0.0.1:7991/",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    },
+    "/dictionary": {
+      "target": "http://127.0.0.1:7991/",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    },
+    "/module": {
+      "target": "http://127.0.0.1:7991/",
+      "changeOrigin": true,
+      "pathRewrite": {"^/api": ""}
+    }
+  }
 }

@@ -52,7 +52,7 @@ export function queryToCommom(object) {
 
 // 获取父母路径
 export function getParentPath(location) {
-  const { pathname, query } = location;
+  const { pathname } = location;
   let parentPath = "";
 
   if (!pathname) {

@@ -1,15 +1,12 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Card, Input, Icon, Row, Col, Button, Form, Layout } from 'antd';
+import { Card, Input, Icon, Button, Form, Layout } from 'antd';
 
 const Password = Input.Password;
 const FormItem = Form.Item;
 const { Content } = Layout;
 
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   handleSubmit = (e) => {
     e && e.preventDefault();
@@ -34,8 +31,6 @@ class Login extends React.Component {
   }
 
   render() {
-    const rowGutter = { xs: 8, sm: 16, md: 24 };
-    const colSpan = { xs: 24, sm: 12, md: 8 };
     const { getFieldDecorator } = this.props.form;
 
     return (

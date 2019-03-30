@@ -13,7 +13,7 @@ class HomeController extends Controller {
     }
     
     await ctx.render('home.tpl', {
-      title: '首页',
+      title: '运营搭积木配置H5系统',
       user: 'dkplus'
     });
   }

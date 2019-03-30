@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react';
-import { connect } from 'dva';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import { Link, withRouter } from "dva/router";
+import React from 'react';
+import { Breadcrumb } from 'antd';
+import { Link } from "dva/router";
 
 const BreadcrumbItem = Breadcrumb.Item;
 
@@ -17,7 +16,7 @@ class MyBreadcrumb extends React.Component {
     let pathStack = [];
     return pathArr.map((path, index, arr) => {
       pathStack.push(path);
-      console.log(path, map, map[path])
+      // console.log(path, map, map[path])
       return <BreadcrumbItem key={path}>
         {
           index === arr.length - 1 &&

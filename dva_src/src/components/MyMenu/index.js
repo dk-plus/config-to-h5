@@ -1,8 +1,6 @@
-import React, { Fragment } from 'react';
-import { connect } from 'dva';
-import { Layout, Menu, Breadcrumb, Icon } from 'antd';
-import { Link, withRouter } from "dva/router";
-import { arrayToKeyValue } from '../../utils/utils';
+import React from 'react';
+import { Menu, Icon } from 'antd';
+import { Link } from "dva/router";
 
 const { SubMenu } = Menu;
 const MenuItem = Menu.Item;
@@ -19,9 +17,9 @@ class MyMenu extends React.Component {
       if (item.children) {
         return (
           <SubMenu key={item.key} title={
-            <Fragment>
+            <>
               <Icon type={item.icon} /> <span>{item.title}</span>
-            </Fragment>
+            </>
           }>
             {
               item.children && this.renderMenu(item.children)
@@ -43,7 +41,7 @@ class MyMenu extends React.Component {
   render() {
     const { menu, location } = this.props;
 
-    return <Fragment>
+    return <>
       <Menu
         mode="inline"
         defaultSelectedKeys={[this.getSelectKey(location.pathname)]}
@@ -54,7 +52,7 @@ class MyMenu extends React.Component {
         this.renderMenu(menu)
       }
       </Menu>
-    </Fragment>
+    </>
   }
 }
 

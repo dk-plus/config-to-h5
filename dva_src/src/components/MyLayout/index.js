@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'dva';
-import { Layout, Menu, Breadcrumb, Icon, Tooltip } from 'antd';
-import { arrayToKeyValue } from '../../utils/utils';
+import { Layout, Menu, Icon, Tooltip } from 'antd';
 import { Link, withRouter } from "dva/router";
 import MyBreadcrumb from "../MyBreadcrumb";
 import MyMenu from "../MyMenu";
@@ -45,7 +44,7 @@ class MyLayout extends React.Component {
   };
 
   onCollapse = (collapsed) => {
-    console.log(collapsed);
+    // console.log(collapsed);
     this.setState({ collapsed });
   }
 
@@ -57,7 +56,7 @@ class MyLayout extends React.Component {
       <Layout
         style={{ minHeight: '100%' }}>
         <Header style={{display: 'flex', justifyContent: 'space-between'}}>
-          <div style={{ color: '#fff' }}>dva-demo</div>
+          <div style={{ color: '#fff' }}>运营搭积木配置H5系统</div>
           <Menu
             mode="horizontal"
             theme="dark"
@@ -91,7 +90,7 @@ class MyLayout extends React.Component {
               {children}
             </Content>
             <Footer style={{ textAlign: 'center' }}>
-              Dva-Demo ©2019 Created by dkplus
+              运营搭积木配置H5系统 ©2019 Created by 邓康
             </Footer>
           </Layout>
         </Layout>

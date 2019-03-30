@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Card, Table, Button, Divider, Tag, Popconfirm, Timeline, Popover, Form, Input, Row, Col, Select, DatePicker, message } from 'antd';
+import { Card, Table, Button, Divider, Tag, Popconfirm, Timeline, Form, Input, Row, Col, Select, DatePicker, message } from 'antd';
 import moment from 'moment';
 import { formItemLayout } from '../../components/BaseLayout';
 import { ONLINE_STATUS } from '../../utils/enum';
@@ -13,16 +13,13 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 class Template extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   state = {
     queryForm: {},
   }
 
   componentDidMount() {
-    const { dispatch, location: { query } } = this.props;
+    const { location: { query } } = this.props;
 
     this.loadData(query);
   }
@@ -211,7 +208,7 @@ class Template extends React.Component {
   }
 
   renderForm() {
-    const { template: { list }, location: { pathname }, form } = this.props;
+    const { form } = this.props;
     const { queryForm } = this.state;
     const { getFieldDecorator } = form;
     const rowGutter = { xs: 8, sm: 16, md: 16, lg: 24 };
@@ -263,7 +260,7 @@ class Template extends React.Component {
           <Col {...colSpan}>
             <FormItem label="创建时间" {...formItemLayout}>
               {getFieldDecorator('f_CreateTime', {
-                initialValue: queryForm.f_CreateTimeBegin && queryForm.f_CreateTimeEnd && [moment(parseInt(queryForm.f_CreateTimeBegin)), moment(parseInt(queryForm.f_CreateTimeEnd))],
+                initialValue: queryForm.f_CreateTimeBegin && queryForm.f_CreateTimeEnd && [moment(parseInt(queryForm.f_CreateTimeBegin, 10)), moment(parseInt(queryForm.f_CreateTimeEnd, 10))],
               })(
                 <RangePicker
                   ranges={{ 
@@ -278,7 +275,7 @@ class Template extends React.Component {
           <Col {...colSpan}>
             <FormItem label="更新时间" {...formItemLayout}>
               {getFieldDecorator('f_UpdateTime', {
-                initialValue: queryForm.f_UpdateTimeBegin && queryForm.f_UpdateTimeEnd && [moment(parseInt(queryForm.f_UpdateTimeBegin)), moment(parseInt(queryForm.f_UpdateTimeEnd))],
+                initialValue: queryForm.f_UpdateTimeBegin && queryForm.f_UpdateTimeEnd && [moment(parseInt(queryForm.f_UpdateTimeBegin, 10)), moment(parseInt(queryForm.f_UpdateTimeEnd, 10))],
               })(
                 <RangePicker
                   ranges={{ 
@@ -301,8 +298,8 @@ class Template extends React.Component {
     const paginationProps = {
       showSizeChanger: true,
       showQuickJumper: true,
-      current: query.pageNo && parseInt(query.pageNo),
-      pageSize: query.pageSize && parseInt(query.pageSize),
+      current: query.pageNo && parseInt(query.pageNo, 10),
+      pageSize: query.pageSize && parseInt(query.pageSize, 10),
       total: total,
       showTotal: () => `共${total}条记录`
     };
@@ -329,20 +326,20 @@ class Template extends React.Component {
       render: (val) => this.renderStatus(val)
     }, {
       title: '创建信息',
-      dataIndex: 'createAt',
+      dataIndex: 'createdAt',
       align: 'center',
       sorter: true,
       render: (val, record) => this.renderUpdateInfo(val, record.creator)
     }, {
       title: '更新信息',
-      dataIndex: 'updateAt',
+      dataIndex: 'updatedAt',
       align: 'center',
       sorter: true,
       render: (val, record) => this.renderUpdateInfo(val, record.updatePerson)
     }, {
       title: '操作',
       align: 'center',
-      width: '220',
+      width: '250px',
       render: (val, record) => {
         return <Fragment>
           <Button size="small"><Link to={`${pathname}/edit?id=${record.id}`}>编辑</Link></Button>

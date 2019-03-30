@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import { Link, routerRedux } from 'dva/router';
-import { Card, Table, Button, Divider, Tag, Popconfirm, Form, message, Row, Col, Input, Select, DatePicker } from 'antd';
+import { Card, Button, Divider, Form, message, Row, Col, Input, Select, DatePicker, Icon, InputNumber } from 'antd';
 import moment from 'moment';
 import { ONLINE_STATUS } from '../../utils/enum';
 import { getParentPath } from '../../utils/utils';
@@ -13,6 +13,10 @@ const { Option } = Select;
 class ActivityEdit extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  state = {
+    modules: [],
   }
 
   componentDidMount() {
@@ -39,7 +43,14 @@ class ActivityEdit extends React.Component {
     dispatch({
       type: 'template/getDetail',
       payload: params.id
-    });
+    }).then(res => {
+      if (res && res.returnCode === '0' && res.returnValue) {
+        const modules = res.returnValue.modules;
+        this.setState({
+          modules
+        });
+      }
+    })
   }
 
   // 返回上一层
@@ -94,21 +105,142 @@ class ActivityEdit extends React.Component {
     });
   }
 
-  renderModule() {
+  // 切换编辑模式
+  handleChangeEditMode(index, mode) {
+    const { modules } = this.state;
+    modules[index].editMode = mode;
+    this.setState({
+      modules
+    });
+  }
+
+  // 添加模块
+  handleSaveModule(index, id) {
+    const { dispatch, form, location: { query } } = this.props;
+    const { getFieldValue } = form;
+    let url = 'module/create';
+    if (id) {
+      url = 'module/update';
+    }
+
+    const params = getFieldValue('module')[index];
+    params.activityId = query.id;
+    console.log(params)
+    dispatch({
+      type: url,
+      payload: { 
+        id: params.id || '',
+        params 
+      }
+    }).then(res => {
+      if (res.returnCode === '0') {
+        message.success('保存成功');
+        this.loadData(query);
+        // this.backToUrl();
+      }
+    });
+  }
+
+  // 添加空模块
+  handleAddNullMoudle() {
+    const { modules } = this.state;
+    modules.push({});
+    this.setState({
+      modules
+    });
+  }
+
+  // 渲染单个模块
+  renderSingleModule(moduleItem, index) {
+    const { getFieldDecorator } = this.props.form;
     const rowGutter = { xs: 8, sm: 16, md: 16, lg: 24 };
     const colSpan = { xs: 24, sm: 12, md: 8, lg: 8 };
-    return <Card title="模块信息">
+    return <Card 
+      title={`模块${index+1}`} 
+      key={index} 
+      style={{marginBottom: '5px'}}
+      extra={
+        moduleItem.editMode &&
+        <>
+          <Button type="primary" size="small" onClick={() => {
+            this.handleChangeEditMode(index, false);
+            this.handleSaveModule(index, moduleItem.id);
+          }}>保存</Button>
+          <Divider type="vertical" />
+          <Button size="small" onClick={() => {
+            this.handleChangeEditMode(index, false);
+          }}>取消</Button>
+        </> ||
+        <Button type="dashed" size="small" onClick={() => {
+          this.handleChangeEditMode(index, true);
+        }}>编辑</Button>
+      }
+    >
+      <Row gutter={rowGutter}>
+      {
+        moduleItem.id &&
+        <Col {...colSpan}>
+          <Form.Item label="ID">
+          {getFieldDecorator(`module[${index}].id`,{
+            initialValue: moduleItem.id,
+          })(
+            moduleItem.editMode &&
+            <Input disabled /> ||
+            <span>{moduleItem.id}</span>
+          )}
+          </Form.Item>
+        </Col>
+      }
+      </Row>
       <Row gutter={rowGutter}>
         <Col {...colSpan}>
-          <Form.Item label="标题"></Form.Item>
+          <Form.Item label="标题">
+          {getFieldDecorator(`module[${index}].title`,{
+            initialValue: moduleItem.title,
+          })(
+            moduleItem.editMode &&
+            <Input placeholder="请输入标题" /> ||
+            <span>{moduleItem.title}</span>
+          )}
+          </Form.Item>
         </Col>
         <Col {...colSpan}>
-          <Form.Item label="类型"></Form.Item>
+          <Form.Item label="类型">
+          {getFieldDecorator(`module[${index}].type`,{
+            initialValue: moduleItem.type,
+          })(
+            moduleItem.editMode &&
+            <InputNumber style={{width: '100%'}} placeholder="请输入类型" /> ||
+            <span>{moduleItem.type}</span>
+          )}
+          </Form.Item>
         </Col>
         <Col {...colSpan}>
-          <Form.Item label="排序"></Form.Item>
+          <Form.Item label="排序">
+          {getFieldDecorator(`module[${index}].sort`,{
+            initialValue: moduleItem.sort,
+          })(
+            moduleItem.editMode &&
+            <InputNumber style={{width: '100%'}} placeholder="请输入排序" /> ||
+            <span>{moduleItem.sort}</span>
+          )}
+          </Form.Item>
         </Col>
       </Row>
+    </Card>
+  }
+
+  // 渲染模块
+  renderModule() {
+    const { modules } = this.state;
+    return <Card title="模块信息" actions={[
+      <Button type="dashed" size="large" onClick={() => {this.handleAddNullMoudle()}}>
+        <Icon type="plus"/>添加模块
+      </Button>
+    ]}>
+      {
+        modules.map((module, index) => this.renderSingleModule(module, index))
+      }
     </Card>
   }
 
@@ -119,7 +251,7 @@ class ActivityEdit extends React.Component {
     const colSpan = { xs: 24, sm: 12, md: 8, lg: 8 };
     return <Fragment>
       <Form onSubmit={this.handleSubmit}>
-        <Card title="基本信息">
+        <Card title="基本信息" style={{marginBottom: '15px'}}>
           {
             detail.id && 
             <Row gutter={rowGutter}>
@@ -127,10 +259,10 @@ class ActivityEdit extends React.Component {
                 <Form.Item label="活动ID">{detail.id || '无'}</Form.Item>
               </Col>
               <Col {...colSpan}>
-                <Form.Item label="创建时间">{detail.createAt && moment(detail.createAt).format('YYYY-MM-DD HH:mm:ss') || '无'}</Form.Item>
+                <Form.Item label="创建时间">{detail.createdAt && moment(detail.createdAt).format('YYYY-MM-DD HH:mm:ss') || '无'}</Form.Item>
               </Col>
               <Col {...colSpan}>
-                <Form.Item label="修改时间">{detail.updateAt && moment(detail.updateAt).format('YYYY-MM-DD HH:mm:ss') || '无'}</Form.Item>
+                <Form.Item label="修改时间">{detail.updatedAt && moment(detail.updatedAt).format('YYYY-MM-DD HH:mm:ss') || '无'}</Form.Item>
               </Col>
             </Row>
           }
@@ -224,17 +356,17 @@ class ActivityEdit extends React.Component {
               </Form.Item>
             </Col>
           </Row>
+          <Row type="flex" justify="end" style={{marginTop: '20px'}}>
+            <Col>
+              <Button type="primary" htmlType="submit" loading={editLoading}>提交</Button>
+              <Divider type="vertical"/>
+              <Button onClick={() => { this.backToUrl() }}>取消</Button>
+            </Col>
+          </Row>
         </Card>
         {
           this.renderModule()
         }
-        <Row type="flex" justify="end" style={{marginTop: '20px'}}>
-          <Col>
-            <Button type="primary" htmlType="submit" loading={editLoading}>提交</Button>
-            <Divider type="vertical"/>
-            <Button onClick={() => { this.backToUrl() }}>取消</Button>
-          </Col>
-        </Row>
       </Form>
     </Fragment>
   }
@@ -249,11 +381,13 @@ class ActivityEdit extends React.Component {
   }
 }
 
-function mapStateToProps({ template, loading }) {
+function mapStateToProps({ template, module, loading }) {
   return {
     template,
+    module,
     loading: loading.effects['template/getDetail'],
-    editLoading: loading.effects['template/update'],
+    editLoading: loading.effects['template/create', 'template/update'],
+    saveModuleLoading: loading.effects['module/create', 'module/update'],
   }
 }
 

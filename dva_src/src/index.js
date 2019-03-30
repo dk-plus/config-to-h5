@@ -2,7 +2,7 @@ import dva from 'dva';
 import './index.css';
 import createHistory from 'history/createBrowserHistory';
 import createLoading from 'dva-loading';
-import { createLogger } from 'redux-logger';
+// import { createLogger } from 'redux-logger';
 
 // 1. Initialize
 const app = dva({

@@ -29,5 +29,9 @@ module.exports = app => {
     },
   });
 
+  ActivityModule.associate = function() {
+    app.model.ActivityModule.belongsTo(app.model.Activity, { foreignKey: 'activityId', targetKey: 'id', as: 'modules' });
+  }
+
   return ActivityModule;
 };

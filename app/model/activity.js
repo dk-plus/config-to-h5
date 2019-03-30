@@ -39,5 +39,9 @@ module.exports = app => {
     },
   });
 
+  Activity.associate = function() {
+    app.model.Activity.hasMany(app.model.ActivityModule, { foreignKey: 'activityId', targetKey: 'id', as: 'modules' });
+  }
+
   return Activity;
 };

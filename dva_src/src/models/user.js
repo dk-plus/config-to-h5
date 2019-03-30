@@ -1,4 +1,3 @@
-import { extend } from '../utils/utils';
 import * as userService from '../services/user';
 
 const stateData = {

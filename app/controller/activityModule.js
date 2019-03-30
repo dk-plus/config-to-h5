@@ -21,11 +21,12 @@ class ActivityModuleController extends Controller {
   async create() {
     const ctx = this.ctx;
     const { ...rest } = ctx.request.body;
-    const createdAt = new Date().valueOf();
-    const updatedAt = new Date().valueOf();
+    const createdAt = Date.now();
+    const updatedAt = Date.now();
     const module = await ctx.model.ActivityModule.create({ createdAt, updatedAt, ...rest });
     ctx.status = 201;
-    ctx.body = module;
+    // ctx.body = module;
+    ctx.body = ctx.outputSuccess(module);
   }
 
   async update() {
@@ -38,9 +39,10 @@ class ActivityModuleController extends Controller {
     }
 
     const { ...rest } = ctx.request.body;
-    const updatedAt = new Date().valueOf();
+    const updatedAt = Date.now();
     await module.update({ updatedAt, ...rest });
-    ctx.body = module;
+    // ctx.body = module;
+    ctx.body = ctx.outputSuccess(module);
   }
 
   async destroy() {

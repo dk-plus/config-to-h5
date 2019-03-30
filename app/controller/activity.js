@@ -31,6 +31,10 @@ class ActivityController extends Controller {
         ...restQuery 
       },
       order: sortName && [ctx.parseOrderQuery(sortName)],
+      include: [{
+        model: this.app.model.ActivityModule,
+        as: 'modules',
+      }],
     };
 
     const content = await ctx.model.Activity.findAndCountAll(query);
@@ -42,15 +46,20 @@ class ActivityController extends Controller {
 
   async show() {
     const ctx = this.ctx;
-    const content = await ctx.model.Activity.findById(toInt(ctx.params.id));
+    const content = await ctx.model.Activity.findById(toInt(ctx.params.id), {
+      include: [{
+        model: this.app.model.ActivityModule,
+        as: 'modules',
+      }],
+    });
     ctx.body = ctx.outputSuccess(content);
   }
 
   async create() {
     const ctx = this.ctx;
     const { ...rest } = ctx.request.body;
-    const createdAt = new Date().valueOf();
-    const updatedAt = new Date().valueOf();
+    const createdAt = Date.now();
+    const updatedAt = Date.now();
     const activity = await ctx.model.Activity.create({ createdAt, updatedAt, ...rest });
     ctx.status = 201;
     ctx.body = ctx.outputSuccess(activity);
@@ -66,7 +75,7 @@ class ActivityController extends Controller {
     }
 
     const { ...rest } = ctx.request.body;
-    const updatedAt = new Date().valueOf();
+    const updatedAt = Date.now();
     await activity.update({ updatedAt, ...rest });
     ctx.body = ctx.outputSuccess(activity);
   }

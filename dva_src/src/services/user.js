@@ -1,4 +1,4 @@
-import { request, post, postData } from '../utils/request';
+import { postData } from '../utils/request';
 
 export function login(args) {
   return postData('/login', args);
