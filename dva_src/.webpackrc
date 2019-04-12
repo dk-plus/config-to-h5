@@ -16,6 +16,9 @@
       "style": true
     }]
   ],
+  "theme": {
+    "border-radius-base": "0px"
+  },
   "es5ImcompatibleVersions": true,
   "proxy": {
     "/logout": {

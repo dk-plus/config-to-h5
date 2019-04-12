@@ -45,7 +45,7 @@ export function queryToCommom(object) {
   Object.entries(object).forEach(attr => {
     let temp = attr[0].split('f_');
     let newAttr = temp.length > 1 && temp[1].substring(0,1).toLowerCase().concat(temp[1].substring(1)) || temp[0];
-    paramObj[newAttr] = object[attr[0]]
+    paramObj[newAttr] = object[attr[0]] || undefined;
   });
   return paramObj;
 }

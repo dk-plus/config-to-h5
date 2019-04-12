@@ -62,13 +62,13 @@ class MyLayout extends React.Component {
             theme="dark"
             style={{ lineHeight: '64px' }}
           >
-            <Menu.Item>
+            {/* <Menu.Item>
               <Tooltip title="我的">
                 <Link to='/my'><Icon type="user" /></Link>
               </Tooltip>
-            </Menu.Item>
+            </Menu.Item> */}
             <Menu.Item>
-              <Tooltip title="退出账户">
+              <Tooltip title="退出登录">
                 <a href='/logout'><Icon type="logout" /></a>
               </Tooltip>
             </Menu.Item>

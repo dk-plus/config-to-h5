@@ -1,14 +1,16 @@
 import React, { Fragment } from 'react';
 import { connect } from 'dva';
 import { Link, routerRedux } from 'dva/router';
-import { Card, Button, Divider, Form, message, Row, Col, Input, Select, DatePicker, Icon, InputNumber } from 'antd';
+import { Card, Button, Divider, Form, message, Row, Col, Input, Select, DatePicker, Icon, InputNumber, Alert, List } from 'antd';
 import moment from 'moment';
-import { ONLINE_STATUS } from '../../utils/enum';
-import { getParentPath } from '../../utils/utils';
+import MonacoEditor from 'react-monaco-editor';
+import { ONLINE_STATUS, MODULE_TYPE, MODULE_TYPE_MAP, ACTIVITY_TYPE, ACTIVITY_TYPE_MAP } from '../../utils/enum';
+import { getParentPath, arrayToKeyValue } from '../../utils/utils';
 
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 const { Option } = Select;
+// const { Panel } = Collapse;
 
 class ActivityEdit extends React.Component {
   constructor(props) {
@@ -30,6 +32,14 @@ class ActivityEdit extends React.Component {
     dispatch({
       type: 'template/initState',
     });
+  }
+  
+  editorDidMount(editor, monaco) {
+    console.log('editorDidMount', editor);
+    editor.focus();
+    console.log(monaco)
+    // console.log(monaco.languages.register({id: 'json'}))
+    console.log(monaco.languages.getLanguages())
   }
 
   // 加载数据
@@ -150,8 +160,74 @@ class ActivityEdit extends React.Component {
     });
   }
 
+  // 渲染提示
+  renderTips(type) {
+    let desc = '';
+    switch(type) {
+      case(MODULE_TYPE.ARTICLE): 
+        desc = [{
+          title: '标题',
+          desc: '描述',
+          url: 'URL链接'
+        }];
+        break;
+      case(MODULE_TYPE.BIG_IMAGE): 
+        desc = {
+          title: '标题',
+          url: 'URL链接'
+        };
+        break;
+      case(MODULE_TYPE.CAROUSEL): 
+        desc = [{
+          title: '标题',
+          url: 'URL链接',
+          image: '图片URL',
+        }];
+        break;
+      case(MODULE_TYPE.IMAGE_TEXT): 
+        desc = [{
+          title: '标题',
+          desc: '描述',
+          image: '图片URL',
+          url: 'URL链接'
+        }];
+        break;
+      case(MODULE_TYPE.POP_UP): 
+        desc = [{
+          title: '标题',
+          desc: '描述',
+          btn: '按钮文案'
+        }];
+        break;
+      case(MODULE_TYPE.SHARE): 
+        desc = {
+          title: '标题',
+          desc: '描述',
+          icon: '图标URL',
+          url: 'URL链接'
+        };
+        break;
+      case(MODULE_TYPE.VIDEO): 
+        desc = {
+          title: '标题',
+          url: 'URL链接',
+        };
+        break;
+    }
+    return <Alert type="info" message="模块json模板" description={<div>{JSON.stringify(desc, {}, 2)}</div>} />
+  }
+
+  renderJSON(arr) {
+    return <>
+      {
+        arr.map(item => <div>{item}</div>)
+      }
+    </>
+  }
+
   // 渲染单个模块
   renderSingleModule(moduleItem, index) {
+    const { loading } = this.props;
     const { getFieldDecorator } = this.props.form;
     const rowGutter = { xs: 8, sm: 16, md: 16, lg: 24 };
     const colSpan = { xs: 24, sm: 12, md: 8, lg: 8 };
@@ -159,6 +235,7 @@ class ActivityEdit extends React.Component {
       title={`模块${index+1}`} 
       key={index} 
       style={{marginBottom: '5px'}}
+      loading={loading}
       extra={
         moduleItem.editMode &&
         <>
@@ -210,8 +287,10 @@ class ActivityEdit extends React.Component {
             initialValue: moduleItem.type,
           })(
             moduleItem.editMode &&
-            <InputNumber style={{width: '100%'}} placeholder="请输入类型" /> ||
-            <span>{moduleItem.type}</span>
+            <Select placeholder="请选择类型">
+              {MODULE_TYPE_MAP.map(item => <Option key={item.value} value={item.value} >{item.label}</Option>)}
+            </Select> ||
+            <span>{arrayToKeyValue(MODULE_TYPE_MAP)[moduleItem.type]}</span>
           )}
           </Form.Item>
         </Col>
@@ -226,6 +305,31 @@ class ActivityEdit extends React.Component {
           )}
           </Form.Item>
         </Col>
+      </Row>
+      <Row gutter={rowGutter}>
+      {this.renderTips(moduleItem.type)}
+      </Row>
+      <Row gutter={rowGutter}>
+        <Form.Item label="数据">
+        {getFieldDecorator(`module[${index}].data`,{
+          initialValue: moduleItem.data,
+        })(
+          moduleItem.editMode &&
+          <MonacoEditor
+            width="100%"
+            height="400"
+            language="json"
+            theme="vs-dark"
+            options={{
+              selectOnLineNumbers: true,
+              formatOnPaste: true,
+              formatOnType: true,
+            }}
+            editorDidMount={this.editorDidMount}
+          /> ||
+          <span>{moduleItem.data}</span>
+        )}
+        </Form.Item>
       </Row>
     </Card>
   }
@@ -245,13 +349,13 @@ class ActivityEdit extends React.Component {
   }
 
   renderForm() {
-    const { template: { detail }, location: { pathname }, form, editLoading } = this.props;
+    const { template: { detail }, location: { query, pathname }, form, editLoading, loading } = this.props;
     const { getFieldDecorator } = form;
     const rowGutter = { xs: 8, sm: 16, md: 16, lg: 24 };
     const colSpan = { xs: 24, sm: 12, md: 8, lg: 8 };
     return <Fragment>
       <Form onSubmit={this.handleSubmit}>
-        <Card title="基本信息" style={{marginBottom: '15px'}}>
+        <Card title="基本信息" style={{marginBottom: '15px'}} loading={loading}>
           {
             detail.id && 
             <Row gutter={rowGutter}>
@@ -276,7 +380,7 @@ class ActivityEdit extends React.Component {
                   }],
                   initialValue: detail.name,
                 })(
-                  <Input placeholder="请输入活动名称" />
+                  <Input placeholder="请输入活动名称" allowClear />
                 )}
               </Form.Item>
             </Col>
@@ -285,7 +389,7 @@ class ActivityEdit extends React.Component {
                 {getFieldDecorator('title',{
                   initialValue: detail.title,
                 })(
-                  <Input placeholder="请输入活动标题" />
+                  <Input placeholder="请输入活动标题" allowClear />
                 )}
               </Form.Item>
             </Col>
@@ -294,7 +398,7 @@ class ActivityEdit extends React.Component {
                 {getFieldDecorator('url',{
                   initialValue: detail.url,
                 })(
-                  <Input placeholder="请输入活动链接" />
+                  <Input placeholder="请输入活动链接" allowClear />
                 )}
               </Form.Item>
             </Col>
@@ -319,6 +423,7 @@ class ActivityEdit extends React.Component {
                   initialValue: detail.type,
                 })(
                   <Select placeholder="请选择类型" allowClear>
+                    {ACTIVITY_TYPE_MAP.map(item => <Option key={item.value} value={item.value}>{item.label}</Option>)}
                   </Select>
                 )}
               </Form.Item>
@@ -365,6 +470,7 @@ class ActivityEdit extends React.Component {
           </Row>
         </Card>
         {
+          query.id &&
           this.renderModule()
         }
       </Form>
@@ -374,7 +480,7 @@ class ActivityEdit extends React.Component {
   render() {
     const { template: { detail }, location: { pathname }, loading } = this.props;
     return (
-      <Card bordered={false} bodyStyle={{padding: 0}} loading={loading}>
+      <Card bordered={false} bodyStyle={{padding: 0}}>
         {this.renderForm()}
       </Card>
     )

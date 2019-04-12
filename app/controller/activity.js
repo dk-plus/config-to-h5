@@ -30,7 +30,7 @@ class ActivityController extends Controller {
         ...dynamicQuery,
         ...restQuery 
       },
-      order: sortName && [ctx.parseOrderQuery(sortName)],
+      order: sortName && [ctx.parseOrderQuery(sortName)] || [['updatedAt', 'desc']],
       include: [{
         model: this.app.model.ActivityModule,
         as: 'modules',
@@ -51,6 +51,7 @@ class ActivityController extends Controller {
         model: this.app.model.ActivityModule,
         as: 'modules',
       }],
+      order: [['modules', 'sort', 'asc']],
     });
     ctx.body = ctx.outputSuccess(content);
   }
