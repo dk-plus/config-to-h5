@@ -193,11 +193,11 @@ class ActivityEdit extends React.Component {
         }];
         break;
       case(MODULE_TYPE.POP_UP): 
-        desc = [{
+        desc = {
           title: '标题',
           desc: '描述',
           btn: '按钮文案'
-        }];
+        };
         break;
       case(MODULE_TYPE.SHARE): 
         desc = {

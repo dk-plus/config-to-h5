@@ -19,6 +19,12 @@ export default {
   effects: {
     *fetch({ payload }, { call, put }) {  // eslint-disable-line
     },
+    
+    // 注册
+    *register({ payload }, { call, put }) {
+      const result = yield call(userService.register, payload);
+      return result;
+    },
 
     *login({ payload }, { call, put }) {
       const result = yield call(userService.login, payload);
